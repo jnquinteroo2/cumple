@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+@custom-variant wide (@media (min-aspect-ratio: 23/20) and (min-width: 768px));
+
+@theme {
+  --color-ink: #15100f;
+  --color-ink-soft: #221a18;
+  --color-paper: #fff4e6;
+  --color-paper-deep: #f6e4cc;
+  --color-coral: #ff6f59;
+  --color-coral-deep: #c63f2c;
+  --color-butter: #ffdf8a;
+  --color-teal: #3ccfc0;
+  --color-teal-deep: #137e75;
+  --color-surface: #fff4e6;
+  --color-hairline: rgba(31, 23, 20, 0.14);
+  --color-ink-text: #1f1714;
+  --color-ink-muted: #5c4a43;
+
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Outfit", ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --animate-aurora: aurora 10s ease-in-out infinite alternate;
+  --animate-shine-fade: shine-fade 6s ease-in-out infinite alternate;
+  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
+  --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
+
+  @keyframes aurora {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes shine-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes shimmer-slide {
+    to {
+      transform: translate(calc(100cqw - 100%), 0);
+    }
+  }
+
+  @keyframes spin-around {
+    0% {
+      transform: translateZ(0) rotate(0);
+    }
+    15%,
+    35% {
+      transform: translateZ(0) rotate(90deg);
+    }
+    65%,
+    85% {
+      transform: translateZ(0) rotate(270deg);
+    }
+    100% {
+      transform: translateZ(0) rotate(360deg);
+    }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background-color: var(--color-ink);
+    background-image:
+      radial-gradient(60rem 40rem at 85% 10%, rgba(255, 111, 89, 0.16), transparent 60%),
+      radial-gradient(50rem 36rem at 0% 100%, rgba(60, 207, 192, 0.1), transparent 60%);
+    color: var(--color-paper);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior: none;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    pointer-events: none;
+    opacity: 0.07;
+    transform: translateZ(0);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  button {
+    font: inherit;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-butter);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-coral);
+    color: var(--color-ink);
+  }
+}
+
+@layer components {
+  .press {
+    transition: transform 160ms var(--ease-out-strong);
+  }
+
+  .press:active {
+    transform: scale(0.97);
+  }
+
+  .safe-top {
+    top: max(1rem, env(safe-area-inset-top));
+  }
+
+  .safe-right {
+    right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .safe-x {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .safe-bottom {
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  .spotlight {
+    opacity: 0;
+    transition: opacity 220ms ease;
+  }
+
+  .balloon-track {
+    animation: balloon-rise var(--rise-duration) linear forwards;
+    animation-delay: var(--rise-delay);
+  }
+
+  .balloon-sway {
+    animation: balloon-sway var(--sway-duration) ease-in-out infinite alternate;
+    transform-origin: 50% 100%;
+  }
+
+  @keyframes balloon-rise {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(0, var(--travel), 0);
+    }
+  }
+
+  @keyframes balloon-sway {
+    from {
+      transform: rotate(-6deg) translateX(-6px);
+    }
+    to {
+      transform: rotate(6deg) translateX(6px);
+    }
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .group:hover > .spotlight {
+    opacity: 1;
+  }
+
+  .hover-lift {
+    transition: transform 200ms var(--ease-out-strong), background-color 200ms ease, border-color 200ms ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
+  }
+
+  .hover-lift:active {
+    transform: scale(0.97);
+  }
+
+  .shimmer-highlight {
+    transition: box-shadow 200ms ease;
+  }
+
+  .group:hover > .shimmer-highlight {
+    box-shadow: inset 0 -6px 10px #ffffff3f;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-aurora,
+  .animate-shine-fade,
+  .animate-shimmer-slide,
+  .animate-spin-around,
+  .balloon-sway {
+    animation: none;
+  }
+
+  .press:active,
+  .hover-lift:hover {
+    transform: none;
+  }
+}
